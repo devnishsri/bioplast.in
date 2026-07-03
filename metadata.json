@@ -1,0 +1,6 @@
+{
+  "name": "Bioplast India",
+  "description": "Modern, responsive website for Bioplast India, showcasing 100% compostable and biodegradable packaging solutions with interactive product spec builders and environmental impact calculators.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
