@@ -28,6 +28,8 @@ export default function ContactForm({ preconfiguredSpec, clearPreconfiguredSpec 
   const [isSubmitted, setIsSubmitted] = useState(false);
   const [generatedQuoteId, setGeneratedQuoteId] = useState('');
   const [copiedQuoteId, setCopiedQuoteId] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   // Sync with Spec Builder configurations if provided
   useEffect(() => {
@@ -47,7 +49,7 @@ export default function ContactForm({ preconfiguredSpec, clearPreconfiguredSpec 
     }
   }, [preconfiguredSpec]);
 
-  const handleSubmit = (e: FormEvent) => {
+  const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
 
     // Verify minimum form requirements
@@ -55,11 +57,36 @@ export default function ContactForm({ preconfiguredSpec, clearPreconfiguredSpec 
       return;
     }
 
-    // Generate simulated Quote ID
-    const randomHex = Math.random().toString(16).substr(2, 6).toUpperCase();
-    const newQuoteId = `BPI-2026-${randomHex}`;
-    setGeneratedQuoteId(newQuoteId);
-    setIsSubmitted(true);
+    setIsSubmitting(true);
+    setError(null);
+
+    try {
+      const response = await fetch("/api/contact", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(formData),
+      });
+
+      if (!response.ok) {
+        const errorText = await response.text();
+        throw new Error(errorText || "Failed to submit inquiry. Please try again.");
+      }
+
+      const result = await response.json();
+      if (result.success) {
+        setGeneratedQuoteId(result.quoteId);
+        setIsSubmitted(true);
+      } else {
+        throw new Error(result.error || "Failed to submit inquiry.");
+      }
+    } catch (err: any) {
+      console.error("Submission error:", err);
+      setError(err.message || "An unexpected network error occurred.");
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCopyQuoteId = () => {
@@ -70,6 +97,7 @@ export default function ContactForm({ preconfiguredSpec, clearPreconfiguredSpec 
 
   const handleResetForm = () => {
     setIsSubmitted(false);
+    setError(null);
     clearPreconfiguredSpec();
     setFormData({
       name: '',
@@ -275,11 +303,28 @@ export default function ContactForm({ preconfiguredSpec, clearPreconfiguredSpec 
                   />
                 </div>
 
+                {error && (
+                  <div className="p-4 rounded-xl bg-rose-50 border border-rose-200 text-rose-800 text-xs font-medium font-sans">
+                    {error}
+                  </div>
+                )}
+
                 <button
                   type="submit"
-                  className="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 text-stone-50 font-bold rounded-xl transition-all shadow-md cursor-pointer text-center text-sm"
+                  disabled={isSubmitting}
+                  className="w-full py-3.5 bg-emerald-700 hover:bg-emerald-800 disabled:bg-emerald-600/50 disabled:cursor-not-allowed text-stone-50 font-bold rounded-xl transition-all shadow-md cursor-pointer text-center text-sm flex items-center justify-center gap-2"
                 >
-                  Submit Quote Inquiry
+                  {isSubmitting ? (
+                    <>
+                      <svg className="animate-spin h-4 w-4 text-white" fill="none" viewBox="0 0 24 24">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z" />
+                      </svg>
+                      <span>Submitting Inquiry...</span>
+                    </>
+                  ) : (
+                    <span>Submit Quote Inquiry</span>
+                  )}
                 </button>
               </form>
             ) : (

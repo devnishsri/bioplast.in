@@ -1,0 +1,64 @@
+{
+  "entities": {
+    "ContactInquiry": {
+      "title": "ContactInquiry",
+      "description": "A contact inquiry/quote request from a potential customer",
+      "type": "object",
+      "properties": {
+        "id": {
+          "type": "string",
+          "description": "Unique quotation ID"
+        },
+        "name": {
+          "type": "string",
+          "description": "Full name of the inquirer"
+        },
+        "email": {
+          "type": "string",
+          "format": "email",
+          "description": "Email address"
+        },
+        "phone": {
+          "type": "string",
+          "description": "Phone number"
+        },
+        "company": {
+          "type": "string",
+          "description": "Company name"
+        },
+        "designation": {
+          "type": "string",
+          "description": "Designation or title"
+        },
+        "productCategory": {
+          "type": "string",
+          "description": "Selected product category"
+        },
+        "monthlyVolume": {
+          "type": "string",
+          "description": "Estimated monthly purchase volume"
+        },
+        "printingRequirement": {
+          "type": "string",
+          "description": "Printing specifications"
+        },
+        "message": {
+          "type": "string",
+          "description": "Custom inquiry message"
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Timestamp of creation"
+        }
+      },
+      "required": ["id", "name", "email", "phone"]
+    }
+  },
+  "firestore": {
+    "/contacts/{contactId}": {
+      "schema": "ContactInquiry",
+      "description": "Collection of all customer contact inquiries"
+    }
+  }
+}

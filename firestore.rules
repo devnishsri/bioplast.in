@@ -1,0 +1,35 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Global Safety Net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() > 0 && id.size() <= 64 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidContact(data) {
+      return data.keys().hasAll(['id', 'name', 'email', 'phone'])
+        && data.keys().size() <= 11
+        && data.id is string && data.id.size() <= 64
+        && data.name is string && data.name.size() > 0 && data.name.size() <= 100
+        && data.email is string && data.email.size() > 0 && data.email.size() <= 100
+        && data.phone is string && data.phone.size() > 0 && data.phone.size() <= 50
+        && (!('company' in data) || (data.company is string && data.company.size() <= 100))
+        && (!('designation' in data) || (data.designation is string && data.designation.size() <= 100))
+        && (!('productCategory' in data) || (data.productCategory is string && data.productCategory.size() <= 50))
+        && (!('monthlyVolume' in data) || (data.monthlyVolume is string && data.monthlyVolume.size() <= 50))
+        && (!('printingRequirement' in data) || (data.printingRequirement is string && data.printingRequirement.size() <= 50))
+        && (!('message' in data) || (data.message is string && data.message.size() <= 5000))
+        && (!('createdAt' in data) || (data.createdAt is string && data.createdAt.size() <= 100));
+    }
+
+    match /contacts/{contactId} {
+      allow create: if isValidId(contactId) && isValidContact(request.resource.data);
+      allow read, update, delete: if false;
+    }
+  }
+}
