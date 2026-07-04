@@ -74,7 +74,18 @@ export default function Footer() {
                 return (
                   <li key={index} className="flex items-start gap-2 text-gray-600 text-sm">
                     <Icon className="w-5 h-5 text-green-600 flex-shrink-0 mt-0.5" />
-                    <span>{info.text}</span>
+                    {info.text === "Ayodhya, Uttar Pradesh, India" ? (
+                      <a 
+                        href="https://maps.app.goo.gl/zc2miSqHWkw43LiJ9" 
+                        target="_blank" 
+                        rel="noopener noreferrer" 
+                        className="hover:underline hover:text-green-700 transition-colors cursor-pointer"
+                      >
+                        <span>{info.text}</span>
+                      </a>
+                    ) : (
+                      <span>{info.text}</span>
+                    )}
                   </li>
                 );
               })}

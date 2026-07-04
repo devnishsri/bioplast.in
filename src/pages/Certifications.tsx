@@ -2,6 +2,7 @@ import { Card } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { CheckCircle } from "lucide-react";
 import { Link } from "wouter";
+import CPCBCertificate from "@/components/CPCBCertificate";
 
 export default function Certifications() {
   const certifications = [
@@ -45,6 +46,9 @@ export default function Certifications() {
         </div>
       </section>
 
+      {/* CPCB Government Certificate Section */}
+      <CPCBCertificate />
+
       {/* Certifications Grid */}
       <section className="py-20 bg-white">
         <div className="container mx-auto px-4">
@@ -85,9 +89,13 @@ export default function Certifications() {
               </Card>
             ))}
           </div>
-
+        </div>
+      </section>
+      {/* Certification Benefits & Call to Action */}
+      <section className="py-20 bg-white">
+        <div className="container mx-auto px-4">
           {/* Certification Benefits */}
-          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-12 mt-16">
+          <div className="bg-gradient-to-br from-green-50 to-green-100 rounded-2xl p-12">
             <h2 className="text-3xl font-bold text-green-900 mb-8 text-center">What Our Certifications Mean</h2>
 
             <div className="grid grid-cols-1 md:grid-cols-2 gap-8">

@@ -6,6 +6,8 @@
 import { useState, useEffect, FormEvent } from 'react';
 import { SpecConfig } from '../types';
 import { Mail, Phone, MapPin, CheckCircle, Copy, FileText, ArrowRight } from 'lucide-react';
+import { db } from '../lib/firebase';
+import { doc, setDoc } from 'firebase/firestore';
 
 interface ContactFormProps {
   preconfiguredSpec: SpecConfig | null;
@@ -61,29 +63,32 @@ export default function ContactForm({ preconfiguredSpec, clearPreconfiguredSpec 
     setError(null);
 
     try {
-      const response = await fetch("/api/contact", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(formData),
-      });
+      // Generate Quote ID
+      const randomHex = Math.random().toString(16).substring(2, 8).toUpperCase();
+      const quoteId = `BPI-2026-${randomHex}`;
 
-      if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(errorText || "Failed to submit inquiry. Please try again.");
-      }
+      const newInquiry = {
+        id: quoteId,
+        name: formData.name,
+        email: formData.email,
+        phone: formData.phone,
+        company: formData.company || "",
+        designation: formData.designation || "",
+        productCategory: formData.productCategory || "carry-u",
+        monthlyVolume: formData.monthlyVolume || "500kg - 1000kg",
+        printingRequirement: formData.printingRequirement || "one-color",
+        message: formData.message || "",
+        createdAt: new Date().toISOString(),
+      };
 
-      const result = await response.json();
-      if (result.success) {
-        setGeneratedQuoteId(result.quoteId);
-        setIsSubmitted(true);
-      } else {
-        throw new Error(result.error || "Failed to submit inquiry.");
-      }
+      // Write directly to Firestore using client-side SDK
+      await setDoc(doc(db, "contacts", quoteId), newInquiry);
+
+      setGeneratedQuoteId(quoteId);
+      setIsSubmitted(true);
     } catch (err: any) {
       console.error("Submission error:", err);
-      setError(err.message || "An unexpected network error occurred.");
+      setError(err.message || "An unexpected error occurred while saving your inquiry.");
     } finally {
       setIsSubmitting(false);
     }

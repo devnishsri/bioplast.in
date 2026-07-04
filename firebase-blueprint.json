@@ -50,6 +50,10 @@
           "type": "string",
           "format": "date-time",
           "description": "Timestamp of creation"
+        },
+        "userId": {
+          "type": "string",
+          "description": "Optional authenticated user ID of creator"
         }
       },
       "required": ["id", "name", "email", "phone"]
