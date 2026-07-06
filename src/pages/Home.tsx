@@ -28,7 +28,7 @@ export default function Home() {
       id: "grocery",
       name: "Grocery Bags",
       description: "U and W cut bags perfect for grocery shops, sweet shops, and retail stores with thin margins.",
-      sizes: "Available in multiple sizes",
+      sizes: "8×10 to 27×30 inches",
       thickness: "Customizable thickness",
       icon: Package,
       images: [
@@ -40,7 +40,7 @@ export default function Home() {
       id: "carry",
       name: "Carry Bags",
       description: "Biodegradable carry bags ideal for clothing boutiques, stationery shops, and fashion retailers.",
-      sizes: "Multiple standard sizes",
+      sizes: "8×12 to 16×24 inches",
       thickness: "Eco-friendly material",
       icon: Truck,
       images: [
@@ -52,7 +52,7 @@ export default function Home() {
       id: "garbage",
       name: "Garbage Bags",
       description: "Heavy-duty biodegradable garbage bags designed for waste management and environmental care.",
-      sizes: "Various capacities",
+      sizes: "17×19 to 35×45 inches",
       thickness: "Durable and reliable",
       icon: Award,
       images: [
